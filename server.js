@@ -7,7 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.get("/", (req, res) => {
-  res.send("Server läuft!!");
+  res.send("Server läuft!");
+});
+
+app.get("/test", (req, res) => {
+  res.send("CLIENT_ID: " + process.env.CLIENT_ID);
 });
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
