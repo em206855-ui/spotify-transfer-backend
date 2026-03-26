@@ -72,20 +72,63 @@ app.get("/playlists/:type", async (req, res) => {
   res.json(response.data.items);
 });
 
-// TRANSFER
-app.post("/transfer", async (req, res) => {
-  const { playlists } = req.body;
+// 🔥 TRANSFER (GET für Browser)
 app.get("/transfer", async (req, res) => {
-  const oldToken = tokens.oldUser;
-  const newToken = tokens.newUser;
+  try {
+    const oldToken = tokens.oldUser;
+    const newToken = tokens.newUser;
 
-  if (!oldToken || !newToken) {
-    return res.send("Bitte beide Accounts einloggen!");
+    if (!oldToken || !newToken) {
+      return res.send("Bitte beide Accounts einloggen!");
+    }
+
+    const playlistsRes = await axios.get("https://api.spotify.com/v1/me/playlists", {
+      headers: { Authorization: "Bearer " + oldToken }
+    });
+
+    const playlists = playlistsRes.data.items;
+
+    const profile = await axios.get("https://api.spotify.com/v1/me", {
+      headers: { Authorization: "Bearer " + newToken }
+    });
+
+    const userId = profile.data.id;
+
+    for (let p of playlists) {
+      let tracks = [];
+      let url = `https://api.spotify.com/v1/playlists/${p.id}/tracks`;
+
+      while (url) {
+        const r = await axios.get(url, {
+          headers: { Authorization: "Bearer " + oldToken }
+        });
+        tracks.push(...r.data.items);
+        url = r.data.next;
+      }
+
+      const uris = tracks.map(t => t.track?.uri).filter(Boolean);
+
+      const newPlaylist = await axios.post(
+        `https://api.spotify.com/v1/users/${userId}/playlists`,
+        { name: p.name, public: false },
+        { headers: { Authorization: "Bearer " + newToken } }
+      );
+
+      for (let i = 0; i < uris.length; i += 100) {
+        await axios.post(
+          `https://api.spotify.com/v1/playlists/${newPlaylist.data.id}/tracks`,
+          { uris: uris.slice(i, i + 100) },
+          { headers: { Authorization: "Bearer " + newToken } }
+        );
+      }
+    }
+
+    res.send("✅ Transfer fertig!");
+  } catch (err) {
+    console.error(err);
+    res.send("❌ Fehler beim Transfer");
   }
-
-  const playlistsRes = await axios.get("https://api.spotify.com/v1/me/playlists", {
-    headers: { Authorization: "Bearer " + oldToken }
-  });
+});
 
   const playlists = playlistsRes.data.items;
 
