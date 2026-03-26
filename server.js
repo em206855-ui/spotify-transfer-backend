@@ -39,6 +39,8 @@ app.get("/login/:type", (req, res) => {
 app.get("/callback", async (req, res) => {
   const { code, state } = req.query;
 
+  console.log("STATE:", state); // 🔥 NEU
+
   const response = await axios.post(
     "https://accounts.spotify.com/api/token",
     querystring.stringify({
@@ -56,7 +58,11 @@ app.get("/callback", async (req, res) => {
     }
   );
 
-  tokens[state] = response.data.access_token;
+  const access_token = response.data.access_token;
+
+  tokens[state] = access_token;
+
+  console.log("TOKENS:", tokens); // 🔥 NEU
 
   res.send("Login erfolgreich – zurück zur App!");
 });
