@@ -17,7 +17,8 @@ const CLIENT_ID = "277e32be70b64b02b8ee8fa7e8a22a6c";
 const CLIENT_SECRET = "79d981c6c512473e830ba45e7601c2b2";
 const REDIRECT_URI = "https://spotify-transfer-backend-production.up.railway.app/callback";
 
-let tokens = {};
+global.tokens = global.tokens || {};
+const tokens = global.tokens;
 
 // LOGIN
 app.get("/login/:type", (req, res) => {
