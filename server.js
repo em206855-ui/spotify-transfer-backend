@@ -130,11 +130,7 @@ app.get("/transfer", async (req, res) => {
   }
 });
 
-  const playlists = playlistsRes.data.items;
 
-  const profile = await axios.get("https://api.spotify.com/v1/me", {
-    headers: { Authorization: "Bearer " + newToken }
-  });
 
   const userId = profile.data.id;
 
