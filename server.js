@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.get("/", (req, res) => {
-  res.send("Server läuft!");
+  res.send("Server läuft v2!");
 });
 
 app.get("/test", (req, res) => {
