@@ -13,9 +13,9 @@ app.get("/", (req, res) => {
 app.get("/test", (req, res) => {
   res.send("CLIENT_ID: " + process.env.CLIENT_ID);
 });
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI;
+const CLIENT_ID = "277e32be70b64b02b8ee8fa7e8a22a6c";
+const CLIENT_SECRET = "79d981c6c512473e830ba45e7601c2b2";
+const REDIRECT_URI = "https://spotify-transfer-backend-production.up.railway.app/callback";
 
 let tokens = {};
 
